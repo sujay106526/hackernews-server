@@ -1,5 +1,4 @@
-import type { User } from "@prisma/client";
-
+import type { User } from "@prisma/client";  
 export type GetMeResult = {
   user: User;
 };
@@ -7,6 +6,7 @@ export type GetMeResult = {
 export enum GetMeError {
   BAD_REQUEST,
 }
+
 
 export type GetAllUsersResult = {
   users: User[];

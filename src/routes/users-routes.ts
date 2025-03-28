@@ -1,14 +1,13 @@
 import { Hono } from "hono";
-import { prismaClient } from "../extras/prisma";
 import { tokenMiddleware } from "./middlewares/token-middleware";
 import { getAllUsers, getMe } from "../controllers/users/users-controller";
 import { GetMeError } from "../controllers/users/users-types";
+
 
 export const usersRoutes = new Hono();
 
 usersRoutes.get("/me", tokenMiddleware, async (context) => {
   const userId = context.get("userId");
-
   try {
     const user = await getMe({
       userId,
@@ -39,7 +38,7 @@ usersRoutes.get("/me", tokenMiddleware, async (context) => {
   }
 });
 
-// /users
+
 usersRoutes.get("", tokenMiddleware, async (context) => {
   try {
     const users = await getAllUsers();

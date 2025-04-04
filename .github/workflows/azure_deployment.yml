@@ -7,12 +7,12 @@ on:
 
 env:
   AZURE_REGION: centralindia
-  RESOURCE_GROUP: Erbium
+  RESOURCE_GROUP: HackerNews
   CONTAINER_APPS_ENVIRONMENT: ErbiumContainerAppsEnvironment
   LOG_ANALYTICS_WORKSPACE: ErbiumLogAnalyticsWorkspace
-  ACR_REGISTRY: erbium.azurecr.io # This has to be unique (at least the `erbium` bit)
-  ACR_REPOSITORY_NAME: erbium
-  CONTAINER_APP_NAME: erbium
+  ACR_REGISTRY: HackerNews1SI21CS106.azurecr.io # This has to be unique (at least the `erbium` bit)
+  ACR_REPOSITORY_NAME: HackerNews
+  CONTAINER_APP_NAME: HackerNews
   TARGET_PORT: 3000
 
 jobs:

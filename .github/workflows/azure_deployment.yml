@@ -10,7 +10,7 @@ env:
   RESOURCE_GROUP: HackerNews
   CONTAINER_APPS_ENVIRONMENT: HackerNewsContainerAppsEnvironment
   LOG_ANALYTICS_WORKSPACE: HackerNewsLogAnalyticsWorkspace
-  ACR_REGISTRY: hackernews1si21cs036.azurecr.io # This has to be unique (at least the `erbium` bit)
+  ACR_REGISTRY: hackernews1si21cs106.azurecr.io # This has to be unique (at least the `erbium` bit)
   ACR_REPOSITORY_NAME: hackernews
   CONTAINER_APP_NAME: hackernews
   TARGET_PORT: 3000
@@ -148,4 +148,4 @@ jobs:
             --registry-server "${{ env.ACR_REGISTRY }}" \
             --registry-username "${{ env.ACR_USERNAME }}" \
             --registry-password "${{ env.ACR_PASSWORD }}" \
-            --env-vars DATABASE_URL=${{ secrets.DATABASE_URL }} DIRECT_URL=${{ secrets.DIRECT_URL }}
+            --env-vars DATABASE_URL=${{ secrets.DATABASE_URL }}

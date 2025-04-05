@@ -10,7 +10,7 @@ env:
   RESOURCE_GROUP: HackerNews
   CONTAINER_APPS_ENVIRONMENT: HackerNewsContainerAppsEnvironment
   LOG_ANALYTICS_WORKSPACE: HackerNewsLogAnalyticsWorkspace
-  ACR_REGISTRY: hackernews1si21cs106.azurecr.io
+  ACR_REGISTRY: hackernews1si21cs036.azurecr.io # This has to be unique (at least the `erbium` bit)
   ACR_REPOSITORY_NAME: hackernews
   CONTAINER_APP_NAME: hackernews
   TARGET_PORT: 3000
@@ -30,6 +30,19 @@ jobs:
           creds: ${{ secrets.AZURE_GITHUB_ACTIONS }}
 
       # INFRA ENSURE BLOCKS
+      - name: Check Resource Group exists
+        run: |
+          RG_EXISTS=$(az group show \
+            --name "${{ env.RESOURCE_GROUP }}" \
+            --query name \
+            --output tsv 2>/dev/null || echo "")
+
+          if [ -z "$RG_EXISTS" ]; then
+            echo "❌ Resource group '${{ env.RESOURCE_GROUP }}' not found."
+            echo "👉 Please create it manually first."
+            exit 1
+          fi
+
       - name: Ensure Log Analytics Workspace
         run: |
           WORKSPACE_EXISTS=$(az monitor log-analytics workspace show \
@@ -122,21 +135,17 @@ jobs:
           push: true
           tags: ${{ env.ACR_REGISTRY }}/${{ env.ACR_REPOSITORY_NAME }}:${{ github.ref_name }}
 
-      # CONTAINER APP DEPLOY WITH ENVIRONMENT VARIABLES
-      - name: Deploy Container App with Secrets
+      # CONTAINER APP DEPLOY
+      - name: Create/update Container App
         run: |
-          az containerapp up \
+          az containerapp create \
             --name "${{ env.CONTAINER_APP_NAME }}" \
             --resource-group "${{ env.RESOURCE_GROUP }}" \
             --environment "${{ env.CONTAINER_APPS_ENVIRONMENT }}" \
             --ingress external \
             --target-port "${{ env.TARGET_PORT }}" \
-            --location "${{ env.AZURE_REGION }}" \
             --image "${{ env.ACR_REGISTRY }}/${{ env.ACR_REPOSITORY_NAME }}:${{ github.ref_name }}" \
             --registry-server "${{ env.ACR_REGISTRY }}" \
             --registry-username "${{ env.ACR_USERNAME }}" \
             --registry-password "${{ env.ACR_PASSWORD }}" \
-            --env-vars \
-                "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
-                "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
-                "DIRECT_URL=${{ secrets.DIRECT_URL }}"
+            --env-vars DATABASE_URL=${{ secrets.DATABASE_URL }} DIRECT_URL=${{ secrets.DIRECT_URL }}

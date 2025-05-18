@@ -1,8 +1,13 @@
-import "dotenv/config"
+import "dotenv/config";
 import { serve } from "@hono/node-server";
-import { allRoutes } from "./routes/routes";
+import { allRoutes } from "./routes/routes.js";
+import { Hono } from "hono";
 
 
-serve(allRoutes);
+const app = new Hono();
 
-console.log("server is running at http://localhost:3000/")
+app.route("/", allRoutes);
+serve(app);
+
+
+console.log("server is running at http://localhost:3000");
